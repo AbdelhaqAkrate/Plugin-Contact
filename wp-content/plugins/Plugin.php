@@ -36,7 +36,7 @@ function plugin_menu() {
 
     add_submenu_page("manage_options","All Mesages", "All messages",4, "All messages", "MessagesList");
     add_submenu_page("manage_options","Message", "Message",4, "Message", "addMessage");
-
+    add_submenu_page("manage_options","settings", "settings",4, "settings", "settings");
 }
 add_action("admin_menu", "plugin_menu");
 
@@ -46,5 +46,8 @@ function MessagesList(){
 
 function addMessage(){
   include "addMessage.php";
+}
+function settings(){
+  include "settings.php";
 }
 add_shortcode('contact','addMessage');

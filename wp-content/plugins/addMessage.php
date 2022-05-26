@@ -21,22 +21,35 @@ if(isset($_POST['submit'])){
 ?>
 <h1>Add New Message</h1>
 <form method='post' action=''>
-  <table>
-    <tr>
-      <td>Email</td>
-      <td><input type='email' name='email'></td>
-    </tr>
-    <tr>
-     <td>Subject</td>
-     <td><input type='text' name='subject'></td>
-    </tr>
-    <tr>
-     <td>Message</td>
-     <td><input type='text' name='message'></td>
-    </tr>
-    <tr>
-     <td>&nbsp;</td>
-     <td><input type='submit' name='submit' value='Send'></td>
-    </tr>
- </table>
+  
+
+      <input type='email' id="email" name='email' placeholder="Email .."> <br><br>
+    
+    <input type='text' id="subject" name='subject' placeholder="Subject .."><br><br>
+ 
+ 
+    <input type='text' id="mssg" name='message' placeholder="Message .."><br><br>
+
+     <span>&nbsp;</span>
+     <input type='submit' name='submit' value='Send'>
+ 
+
 </form>
+
+
+<script >
+  // first name
+  var email = document.getElementById('email');
+  // var input_fname = document.getElementById('input_fname');
+  const email_display = localStorage['email'];
+  email.style.display = email_display;
+  // input_fname.removeAttribute('required');
+  var subject = document.getElementById('subject');
+  // var input_fname = document.getElementById('input_fname');
+  const sub_display = localStorage['subject'];
+  subject.style.display = sub_display;
+  var mssg = document.getElementById('mssg');
+  // var input_fname = document.getElementById('input_fname');
+  const mssg_display = localStorage['message'];
+  mssg.style.display = mssg_display;
+</script>
