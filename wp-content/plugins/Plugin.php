@@ -1,59 +1,50 @@
 <?php
- 
-/**
- * Plugin Name:       Plugin
- * Description:       My First Plugin.
- * Version:           1.10.3
- * Requires at least: 5.2
- * Requires PHP:      8.1
- * Author:            Abdelhaq Akrate
- */
+/*
+   Plugin Name: Plugin
+   description: My first Plugin
+   Version: 1.0.0
+   Author: Abdelhaq Akrate
+*/
 
-function Form() {
-    echo '<form action="' . esc_url( $_SERVER['REQUEST_URI'] ) . '" method="post">';
-    echo '<p>';
-    echo 'Your Name * <br />';
-    echo '<input type="text" name="cf-name" pattern="[a-zA-Z0-9 ]+" value="' . ( isset( $_POST["cf-name"] ) ? esc_attr( $_POST["cf-name"] ) : '' ) . '" size="40" />';
-    echo '</p>';
-    echo '<p>';
-    echo 'Your Email * <br />';
-    echo '<input type="email" name="cf-email" value="' . ( isset( $_POST["cf-email"] ) ? esc_attr( $_POST["cf-email"] ) : '' ) . '" size="40" />';
-    echo '</p>';
-    echo '<p>';
-    echo 'Subject * <br />';
-    echo '<input type="text" name="cf-subject" pattern="[a-zA-Z ]+" value="' . ( isset( $_POST["cf-subject"] ) ? esc_attr( $_POST["cf-subject"] ) : '' ) . '" size="40" />';
-    echo '</p>';
-    echo '<p>';
-    echo 'Your Message * <br />';
-    echo '<textarea rows="10" cols="35" name="cf-message">' . ( isset( $_POST["cf-message"] ) ? esc_attr( $_POST["cf-message"] ) : '' ) . '</textarea>';
-    echo '</p>';
-    echo '<p><input type="submit" name="cf-submitted" value="Send"/></p>';
-    echo '</form>';
+
+function plugin_table(){
+
+  global $wpdb;
+  $charset_collate = $wpdb->get_charset_collate();
+
+  $tablename = $wpdb->prefix."plugin";
+
+  $sql = "CREATE TABLE $tablename (
+  id mediumint(11) NOT NULL AUTO_INCREMENT,
+  email varchar(80) NOT NULL,
+  subject varchar(180) NOT NULL,
+  message varchar(280) NOT NULL,
+  PRIMARY KEY  (id)
+  ) $charset_collate;";
+
+  require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+  dbDelta( $sql );
+
 }
-function sendEmail() {
+register_activation_hook( __FILE__, 'plugin_table' );
 
-    if ( isset( $_POST['cf-submitted'] ) ) {
-        $name    = sanitize_text_field( $_POST["cf-name"] );
-        $email   = sanitize_email( $_POST["cf-email"] );
-        $subject = sanitize_text_field( $_POST["cf-subject"] );
-        $message = esc_textarea( $_POST["cf-message"] );
-        $to = get_option( 'admin_email' );
-        $headers = "From: $name <$email>" . "\r\n";
-        if ( wp_mail( $to, $subject, $message, $headers ) ) {
-            echo '<div>';
-            echo '<p>Thanks For Contacting Us.</p>';
-            echo '</div>';
-        } else {
-            echo 'An Unexpected Error Occurred';
-        }
-    }
+function plugin_menu() {
+
+    add_menu_page("Plugin", "First Plugin","MyPlugin","manage_options", "./icons/Circle-icons-contacts.svg.png");
+
+    // add_menu_page("Plugin", "First Plugin","manage_options", "MyPlugin", "addMessage","./icons/Circle-icons-contacts.svg.png'));
+
+    add_submenu_page("manage_options","All Mesages", "All messages",4, "All messages", "MessagesList");
+    add_submenu_page("manage_options","Message", "Message",4, "Message", "addMessage");
+
+}
+add_action("admin_menu", "plugin_menu");
+
+function MessagesList(){
+  include "Messages.php";
 }
 
-function cf_shortcode() {
-    ob_start();
-    sendEmail();
-    Form();
-
-    return ob_get_clean();
+function addMessage(){
+  include "addMessage.php";
 }
-add_shortcode( 'sitepoint_contact_form', 'cf_shortcode' );
+add_shortcode('contact','addMessage');
